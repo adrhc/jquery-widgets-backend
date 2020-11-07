@@ -31,8 +31,6 @@ public class DataRestApplication {
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		//		config.setAllowedMethods(EnumSet.allOf(RequestMethod.class)
-		//				.stream().map(Enum::name).collect(Collectors.toList()));
 		config.addAllowedMethod(ALL);
 		config.addAllowedOrigin(ALL);
 		config.addAllowedHeader(ALL);
