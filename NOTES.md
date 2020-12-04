@@ -1,3 +1,6 @@
+# info
+http://127.0.0.1:8011/persons
+http://127.0.0.1:8011/persons/search
 # json
 {"firstName": "Gigi", "lastName": "Kent"}
 # POST
