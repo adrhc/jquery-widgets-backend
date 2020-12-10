@@ -5,6 +5,6 @@ import ro.go.adrhc.datarest.entities.Person;
 
 import java.util.List;
 
-public interface PersonRepository extends PagingAndSortingRepository<Person, Long> {
+public interface PersonRepository extends PagingAndSortingRepository<Person, Integer> {
 	List<Person> findByFirstNameStartingWith(String firstName);
 }

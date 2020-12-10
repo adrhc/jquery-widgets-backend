@@ -3,9 +3,8 @@ package ro.go.adrhc.datarest.entities;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -13,7 +12,10 @@ import javax.persistence.Id;
 public class Person {
 	@Id
 	@GeneratedValue
-	private Long id;
+	private Integer id;
 	private String firstName;
 	private String lastName;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderBy("name")
+	private List<Cat> cats;
 }
