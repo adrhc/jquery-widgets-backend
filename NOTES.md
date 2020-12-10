@@ -5,6 +5,7 @@ http://127.0.0.1:8011/persons/search
 {"firstName": "Gigi", "lastName": "Kent"}
 # POST
 curl 'http://127.0.0.1:8011/persons' -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"firstName": "Gigi", "lastName": "Kent"}'
+curl 'http://127.0.0.1:8011/cats' -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name": "cat1", "person_id": "1"}'
 # GET
 curl http://127.0.0.1:8011/persons
 # jq

@@ -16,7 +16,7 @@ public class Person implements Serializable {
 	private Integer id;
 	private String firstName;
 	private String lastName;
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OrderBy("name")
 	private List<Cat> cats;
 
