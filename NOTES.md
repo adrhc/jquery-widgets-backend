@@ -5,8 +5,9 @@ http://127.0.0.1:8011/persons/search
 {"firstName": "Gigi", "lastName": "Kent"}
 # POST
 curl 'http://127.0.0.1:8011/persons' -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"firstName": "Gigi", "lastName": "Kent"}'
-curl 'http://127.0.0.1:8011/cats' -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name": "cat"}'
-curl -i -X PUT -H "Content-Type:text/uri-list" -d "http://127.0.0.1:8011/persons/1" http://127.0.0.1:8011/cats/2/person
+curl 'http://127.0.0.1:8011/cats' -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name": "cat2"}'
+curl 'http://127.0.0.1:8011/cats' -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name": "cat3"}'
+curl -i -X PUT -H "Content-Type:text/uri-list" -d "http://127.0.0.1:8011/persons/1" http://127.0.0.1:8011/cats/3/person
 # GET
 curl http://127.0.0.1:8011/persons
 curl http://127.0.0.1:8011/persons/1/cats
