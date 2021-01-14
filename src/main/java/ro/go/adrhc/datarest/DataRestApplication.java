@@ -21,6 +21,7 @@ public class DataRestApplication {
 		SpringApplication.run(DataRestApplication.class, args);
 	}
 
+/*
 	@Bean
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -34,6 +35,7 @@ public class DataRestApplication {
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);
 	}
+*/
 
 	/**
 	 * https://spring.io/guides/gs/rest-service-cors/#global-cors-configuration
