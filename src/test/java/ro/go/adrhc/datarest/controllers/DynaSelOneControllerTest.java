@@ -28,10 +28,10 @@ class DynaSelOneControllerTest {
 	@Test
 	void findByTitle() throws Exception {
 		List<Object> persons = List.of(Person.builder().id(1).firstName("gigi").lastName("gigi").build());
-		given(repository.findByTitle(anyString(), eq("Person"))).willReturn(persons);
+		given(repository.findByTitle(anyString(), eq("person"))).willReturn(persons);
 		this.mvc.perform(get("/dynaselone")
 				.queryParam("title", "gigi")
-				.queryParam("entity", "Person")
+				.queryParam("entity", "person")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
