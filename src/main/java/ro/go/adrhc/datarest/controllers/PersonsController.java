@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin
 @RequestMapping("/persons")
 public class PersonsController {
 	private final PersonsRepository repository;
