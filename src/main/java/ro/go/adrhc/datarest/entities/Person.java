@@ -31,6 +31,9 @@ public class Person implements Serializable {
 		return id != null && id.equals(other.getId());
 	}
 
+	/**
+	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/
+	 */
 	@Override
 	public int hashCode() {
 		return getClass().hashCode();

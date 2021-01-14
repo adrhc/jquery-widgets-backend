@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ro.go.adrhc.datarest.entities.Person;
 import ro.go.adrhc.datarest.repositories.PersonsRepository;
 
-import java.util.Collections;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -13,6 +12,10 @@ import java.util.Optional;
 @RequestMapping("/persons")
 public class PersonsController {
 	private final PersonsRepository repository;
+
+	private static void clearFakeIds(Person person) {
+		person.getCats().forEach(c -> c.setId(c.getId() < 0 ? null : c.getId()));
+	}
 
 	@GetMapping(path = "{id}")
 	public Optional<Person> findById(@PathVariable Integer id) {
@@ -26,15 +29,15 @@ public class PersonsController {
 
 	@PostMapping
 	public Person create(@RequestBody Person person) {
+		clearFakeIds(person);
 		return repository.save(person);
 	}
 
 	@PutMapping(path = "{id}")
 	public Person update(@RequestBody Person person) {
+		// issues with null cats (search for []):
 		// https://stackoverflow.com/questions/5587482/hibernate-a-collection-with-cascade-all-delete-orphan-was-no-longer-referenc
-		if (person.getCats() == null) {
-			person.setCats(Collections.emptyList());
-		}
+		clearFakeIds(person);
 		return repository.save(person);
 	}
 
