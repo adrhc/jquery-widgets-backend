@@ -27,3 +27,5 @@ https://stackoverflow.com/questions/34583515/spring-jpa-rest-one-to-many
 curl -i -X PUT -H "Content-Type:text/uri-list" -d "http://127.0.0.1:8011/persons/1" http://127.0.0.1:8011/cats/4/person
 ### projections
 https://www.baeldung.com/spring-data-rest-projections-excerpts
+# JPA
+https://ci.apache.org/projects/openjpa/2.2.x/docbook/manual.html
