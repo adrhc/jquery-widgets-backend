@@ -7,6 +7,7 @@ import ro.go.adrhc.datarest.repositories.PersonsRepository;
 
 import java.util.Optional;
 
+@CrossOrigin
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/persons")
