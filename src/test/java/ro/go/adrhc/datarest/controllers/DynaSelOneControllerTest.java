@@ -15,8 +15,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(DynaSelOneController.class)
 class DynaSelOneControllerTest {
@@ -28,13 +27,15 @@ class DynaSelOneControllerTest {
 
 	@Test
 	void findByTitle() throws Exception {
-		List<Object> persons = List.of(Person.builder().firstName("gigi").lastName("gigi").build());
+		List<Object> persons = List.of(Person.builder().id(1).firstName("gigi").lastName("gigi").build());
 		given(repository.findByTitle(anyString(), eq("Person"))).willReturn(persons);
 		this.mvc.perform(get("/dynaselone")
 				.queryParam("title", "gigi")
 				.queryParam("entity", "Person")
-				.accept(MediaType.APPLICATION_FORM_URLENCODED))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON));
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$[0].firstName").value("gigi"));
 	}
 }
