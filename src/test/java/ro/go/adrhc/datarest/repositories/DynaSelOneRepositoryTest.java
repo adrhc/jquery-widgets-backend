@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ro.go.adrhc.datarest.entities.Person;
+import ro.go.adrhc.datarest.repositories.dynaselone.DynaSelOneRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;

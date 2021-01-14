@@ -6,7 +6,7 @@ import ro.go.adrhc.datarest.entities.Person;
 
 import java.util.List;
 
-public interface PersonRepository extends PagingAndSortingRepository<Person, Integer> {
+public interface PersonsRepository extends PagingAndSortingRepository<Person, Integer> {
 	@Query("from Person p join fetch p.cats")
 	List<Person> findAll();
 

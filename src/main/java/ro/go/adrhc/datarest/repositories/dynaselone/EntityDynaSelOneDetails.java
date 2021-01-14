@@ -1,4 +1,4 @@
-package ro.go.adrhc.datarest.repositories;
+package ro.go.adrhc.datarest.repositories.dynaselone;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
