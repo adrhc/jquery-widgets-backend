@@ -27,7 +27,7 @@ class DynaSelOneControllerTest {
 
 	@Test
 	void findByTitle() throws Exception {
-		List<Object> persons = List.of(Person.builder().id(1).firstName("gigi").lastName("gigi").build());
+		List<Object> persons = List.of(new Person(1, "gigi", "gigi", null));
 		given(repository.findByTitle(anyString(), eq("person"))).willReturn(persons);
 		this.mvc.perform(get("/dynaselone")
 				.queryParam("title", "gigi")

@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.*;
 import ro.go.adrhc.datarest.entities.Person;
 import ro.go.adrhc.datarest.repositories.PersonsRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/persons")
 public class PersonsController {
 	private final PersonsRepository repository;
@@ -20,18 +20,22 @@ public class PersonsController {
 	}
 
 	@GetMapping
-	public List<Person> findAll() {
+	public Iterable<Person> findAll() {
 		return repository.findAll();
 	}
 
 	@PutMapping
-	@PostMapping
-	public Person save(Person person) {
+	public Person update(@RequestBody Person person) {
 		return repository.save(person);
 	}
 
-	@DeleteMapping
-	public void delete(Person person) {
-		repository.delete(person);
+	@PostMapping
+	public Person create(@RequestBody Person person) {
+		return repository.save(person);
+	}
+
+	@DeleteMapping(path = "{id}")
+	public void delete(@PathVariable Integer id) {
+		repository.deleteById(id);
 	}
 }

@@ -23,7 +23,7 @@ class DynaSelOneRepositoryTest {
 	@Test
 	@Transactional
 	void findByTitle() {
-		em.persist(Person.builder().firstName("gigi").lastName("gigi").build());
+		em.persist(new Person(null, "gigi", "gigi", null));
 		List<Person> persons = repository.findByTitle("gigi", "person");
 		log.debug("persons:\n{}", persons.stream().map(Person::toString).collect(Collectors.joining("\n")));
 	}

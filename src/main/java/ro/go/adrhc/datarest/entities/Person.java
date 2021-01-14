@@ -1,9 +1,6 @@
 package ro.go.adrhc.datarest.entities;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,8 +9,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Person implements Serializable {
 	@Id
 	@GeneratedValue

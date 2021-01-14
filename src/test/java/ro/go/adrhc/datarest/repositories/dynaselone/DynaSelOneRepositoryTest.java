@@ -21,7 +21,7 @@ class DynaSelOneRepositoryTest {
 
 	@Test
 	void findByTitle() {
-		Person person = Person.builder().firstName("gigi").lastName("gigi").build();
+		Person person = new Person(1, "gigi", "gigi", null);
 		repository.save(person);
 		List<Person> persons = dynaSelOneRepository.findByTitle("gigi", "person");
 		assertThat(persons).containsOnly(person);
