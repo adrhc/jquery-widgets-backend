@@ -7,6 +7,8 @@ import ro.go.adrhc.datarest.repositories.PersonsRepository;
 
 import java.util.Optional;
 
+import static ro.go.adrhc.datarest.util.HibernateUtils.initializeNestedProperties;
+
 @CrossOrigin
 @RequiredArgsConstructor
 @RestController
@@ -25,7 +27,7 @@ public class PersonsController {
 
 	@GetMapping
 	public Iterable<Person> findAll() {
-		return repository.findAll();
+		return initializeNestedProperties(repository.findAll(), "cats");
 	}
 
 	@PostMapping

@@ -1,39 +1,38 @@
 package ro.go.adrhc.datarest.repositories.dynaselone;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ro.go.adrhc.datarest.entities.Person;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
-import java.util.Map;
+
+import static ro.go.adrhc.datarest.util.HibernateUtils.initializeNestedProperties;
 
 /**
- * spring 3.2.6 style (though this should use HibernateTemplate)
+ * spring 3.2.6 working style (though this should use HibernateTemplate)
  */
 @Transactional
 @Repository
+@RequiredArgsConstructor
 public class DynaSelOneRepository {
-	private static Map<String, EntityDynaSelOneDetails> details = Map.of(
-			"person", new EntityDynaSelOneDetails<>("Person", "firstName", Person.class,
-					(persons) -> {
-						// initialize cats collection
-						persons.forEach(it -> it.getCats().size());
-						return persons;
-					}));
+	private final ApplicationContext ac;
+	private final EntityManager em;
 
-	@Autowired
-	private EntityManager em;
-
-	public <T, R> List<R> findByTitle(String title, String entityName) {
-		EntityDynaSelOneDetails<T, R> details = DynaSelOneRepository.details.get(entityName);
+	public <T> List<T> findByTitle(String title, String entityName) {
+		DynaSelOneDetails<T> details = dynaSelOneDetailsOf(entityName);
 //		return this.hibernateTemplate().find("FROM " + details.getEntityName() +
 //				" WHERE " + details.getTitleField() + " LIKE ?0 || '%'", title);
 		TypedQuery<T> query = em.createQuery("FROM " + details.getEntityName() +
 				" WHERE " + details.getTitleField() + " LIKE :firstName || '%'", details.getEntityClass());
 		query.setParameter("firstName", title);
-		return details.getTransformer().apply(query.getResultList());
+		List<T> entities = query.getResultList();
+		return initializeNestedProperties(entities, details.getNestedProperties());
+	}
+
+	private <T> DynaSelOneDetails<T> dynaSelOneDetailsOf(String entityName) {
+		return (DynaSelOneDetails<T>) ac.getBean(entityName.concat("DynaSelOneDetails"));
 	}
 }

@@ -14,6 +14,9 @@ import java.util.List;
 public class DynaSelOneController {
 	private final DynaSelOneRepository dynaSelOneRepository;
 
+	/**
+	 * struts 1.x working style
+	 */
 	@GetMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public List findByTitle(@RequestParam String title, @RequestParam String entity) {
