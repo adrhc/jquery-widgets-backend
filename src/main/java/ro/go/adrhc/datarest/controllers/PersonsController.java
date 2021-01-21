@@ -56,6 +56,9 @@ public class PersonsController {
 
 	@DeleteMapping(path = "{id}")
 	public void delete(@PathVariable Integer id) {
+		if (id > 10) {
+			throw new RuntimeException();
+		}
 		repository.deleteById(id);
 	}
 
