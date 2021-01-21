@@ -35,3 +35,4 @@ build/
 ### custom ###
 /.mvn/wrapper/maven-wrapper.jar
 /src/main/resources/static
+/src/main/resources/static/**
