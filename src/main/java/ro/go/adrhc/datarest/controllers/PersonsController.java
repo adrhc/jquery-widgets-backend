@@ -7,6 +7,7 @@ import ro.go.adrhc.datarest.dto.Problem;
 import ro.go.adrhc.datarest.entities.Person;
 import ro.go.adrhc.datarest.repositories.PersonsRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -67,9 +68,13 @@ public class PersonsController {
 	@ExceptionHandler({Exception.class})
 	@ResponseStatus
 	@ResponseBody
-	public Problem<?> reportProblem(Exception e) {
+	public List<Problem<?>> reportProblem(Exception e) {
 		var msg = e.getMessage();
 		log.error(msg, e);
-		return new Problem<>(msg == null ? "bad day" : msg, ThreadLocalRandom.current().nextInt());
+		return List.of(
+				new Problem<>(msg == null ? "bad day1" : msg, ThreadLocalRandom.current().nextInt()),
+				new Problem<>(msg == null ? "bad day2" : msg, ThreadLocalRandom.current().nextInt()),
+				new Problem<>(msg == null ? "bad day3" : msg, ThreadLocalRandom.current().nextInt())
+		);
 	}
 }
