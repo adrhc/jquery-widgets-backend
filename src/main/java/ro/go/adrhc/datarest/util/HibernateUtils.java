@@ -30,7 +30,7 @@ public class HibernateUtils {
 				((Collection) object).size();
 			}
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			log.error("failed to initialize {}", nestedPropertyName);
 		}
 		return entity;
 	}
