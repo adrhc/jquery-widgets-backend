@@ -1,6 +1,7 @@
 package ro.go.adrhc.datarest.controllers;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ro.go.adrhc.datarest.dto.Problem;
 import ro.go.adrhc.datarest.entities.Person;
@@ -15,6 +16,7 @@ import static ro.go.adrhc.datarest.util.HibernateUtils.initializeNestedPropertie
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/persons")
+@Slf4j
 public class PersonsController {
 	private final PersonsRepository repository;
 
@@ -65,7 +67,9 @@ public class PersonsController {
 	@ExceptionHandler({Exception.class})
 	@ResponseStatus
 	@ResponseBody
-	public Problem<?> reportProblem() {
-		return new Problem<>("bad day", ThreadLocalRandom.current().nextInt());
+	public Problem<?> reportProblem(Exception e) {
+		var msg = e.getMessage();
+		log.error(msg, e);
+		return new Problem<>(msg == null ? "bad day" : msg, ThreadLocalRandom.current().nextInt());
 	}
 }

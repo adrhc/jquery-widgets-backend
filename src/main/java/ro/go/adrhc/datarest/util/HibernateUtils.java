@@ -25,9 +25,9 @@ public class HibernateUtils {
 
 	public static <T> T initializeNestedProperty(T entity, String nestedPropertyName) {
 		try {
-			Collection collection = (Collection) PropertyUtils.getNestedProperty(entity, nestedPropertyName);
-			if (collection != null) {
-				collection.size();
+			Object object = PropertyUtils.getNestedProperty(entity, nestedPropertyName);
+			if (object instanceof Collection) {
+				((Collection) object).size();
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

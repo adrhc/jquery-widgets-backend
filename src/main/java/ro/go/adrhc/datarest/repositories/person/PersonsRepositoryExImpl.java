@@ -15,7 +15,7 @@ public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 
 	@Override
 	public List<Person> findAll() {
-		TypedQuery<Person> query = em.createQuery("FROM Person", Person.class);
+		TypedQuery<Person> query = em.createQuery("FROM Person p LEFT JOIN FETCH p.friend", Person.class);
 		List<Person> persons = query.getResultList();
 		return initializeNestedProperties(persons, "cats");
 	}
