@@ -24,7 +24,7 @@ class PersonsControllerTest {
 
 	@Test
 	void findById() throws Exception {
-		Person person = new Person(1, "gigi", "gigi", null);
+		Person person = new Person(1, "gigi", "gigi", null, null);
 		given(repository.findById(1)).willReturn(Optional.of(person));
 		this.mvc.perform(get("/persons/1")
 				.accept(MediaType.APPLICATION_JSON))

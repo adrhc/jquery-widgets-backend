@@ -21,7 +21,7 @@ public class Cat implements Serializable {
 	@GeneratedValue
 	private Integer id;
 	private String name;
-	@Column(name = "person_id", insertable = true, updatable = false)
+	@Column(name = "person_id", insertable = false, updatable = false)
 	private Integer personId;
 //	@ManyToOne
 //	private Person person;

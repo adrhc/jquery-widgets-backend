@@ -18,6 +18,9 @@ public class Person implements Serializable {
 	private Integer id;
 	private String firstName;
 	private String lastName;
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "friend_id")
+	private Person friend;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("name")
 	@JoinColumn(name = "person_id")
