@@ -21,10 +21,6 @@ import static ro.go.adrhc.datarest.util.HibernateUtils.initializeNestedPropertie
 public class PersonsController {
 	private final PersonsRepository repository;
 
-	private static void clearFakeIds(Person person) {
-		person.getCats().forEach(c -> c.setId(c.getId() < 0 ? null : c.getId()));
-	}
-
 	private static void failFor(Person person) {
 		if (person.getFirstName().equalsIgnoreCase("error")) {
 			throw new RuntimeException();
@@ -43,7 +39,6 @@ public class PersonsController {
 
 	@PostMapping
 	public Person create(@RequestBody Person person) {
-		clearFakeIds(person);
 		failFor(person);
 		return repository.save(person);
 	}
@@ -52,7 +47,6 @@ public class PersonsController {
 	public Person update(@RequestBody Person person) {
 		// issues with null cats (search for []):
 		// https://stackoverflow.com/questions/5587482/hibernate-a-collection-with-cascade-all-delete-orphan-was-no-longer-referenc
-		clearFakeIds(person);
 		failFor(person);
 		return repository.save(person);
 	}
