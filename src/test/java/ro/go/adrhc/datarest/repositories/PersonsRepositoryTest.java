@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ro.go.adrhc.datarest.dto.PersonDto;
 import ro.go.adrhc.datarest.entities.Cat;
 import ro.go.adrhc.datarest.entities.Person;
 
@@ -40,8 +41,8 @@ class PersonsRepositoryTest {
 	@Test
 	void findAll() {
 		repository.save(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
-		List<Person> persons = repository.findAll();
-		log.debug("persons:\n{}", persons.stream().map(Person::toString).collect(Collectors.joining("\n")));
+		List<PersonDto> persons = repository.findAllDto();
+		log.debug("persons:\n{}", persons.stream().map(PersonDto::toString).collect(Collectors.joining("\n")));
 		assertThat(persons).hasSize(1).element(0)
 				.hasFieldOrPropertyWithValue("firstName", "gigi");
 		assertThat(persons.get(0).getCats()).hasSize(1).element(0)

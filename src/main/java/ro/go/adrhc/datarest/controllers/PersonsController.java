@@ -33,8 +33,8 @@ public class PersonsController {
 	}
 
 	@GetMapping
-	public Iterable<Person> findAll() {
-		return initializeNestedProperties(repository.findAll(), "cats");
+	public Iterable<PersonDto> findAll() {
+		return initializeNestedProperties(repository.findAllDto(), "cats");
 	}
 
 	@PostMapping

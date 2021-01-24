@@ -14,8 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ro.go.adrhc.datarest.util.HibernateUtils.initializeNestedProperties;
-
 @RequiredArgsConstructor
 @Transactional
 public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
@@ -47,11 +45,15 @@ public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 	public PersonDto loadDtoById(Integer id) {
 		TypedQuery<Person> query = em.createQuery("FROM Person p LEFT JOIN FETCH p.friend WHERE p.id = :id", Person.class);
 		query.setParameter("id", id);
-		Person person = query.getSingleResult();
+		return personDtoOf(query.getSingleResult());
+	}
 
+	private PersonDto personDtoOf(Person person) {
+		if (person == null) {
+			return null;
+		}
 		// detach and remove friend's references
 		Person friend = detachPerson(person.getFriend());
-
 		return new PersonDto(friend, catsDtoOf(person.getCats()), person);
 	}
 
@@ -80,9 +82,9 @@ public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 	}
 
 	@Override
-	public List<Person> findAll() {
+	public List<PersonDto> findAllDto() {
 		TypedQuery<Person> query = em.createQuery("FROM Person p LEFT JOIN FETCH p.friend", Person.class);
 		List<Person> persons = query.getResultList();
-		return initializeNestedProperties(persons, "cats");
+		return persons.stream().map(this::personDtoOf).collect(Collectors.toList());
 	}
 }

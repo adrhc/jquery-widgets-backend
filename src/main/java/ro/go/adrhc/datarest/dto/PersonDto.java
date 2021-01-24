@@ -3,6 +3,7 @@ package ro.go.adrhc.datarest.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import ro.go.adrhc.datarest.entities.Person;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class PersonDto {
 	private Integer id;
 	private String firstName;
