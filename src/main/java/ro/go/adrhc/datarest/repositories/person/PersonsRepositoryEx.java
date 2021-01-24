@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PersonsRepositoryEx {
 	List<Person> findAll();
+
+	Person loadById(Integer id);
 }

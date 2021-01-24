@@ -8,7 +8,6 @@ import ro.go.adrhc.datarest.entities.Person;
 import ro.go.adrhc.datarest.repositories.PersonsRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static ro.go.adrhc.datarest.util.HibernateUtils.initializeNestedProperties;
@@ -28,8 +27,8 @@ public class PersonsController {
 	}
 
 	@GetMapping(path = "{id}")
-	public Optional<Person> findById(@PathVariable Integer id) {
-		return repository.findById(id);
+	public Person findById(@PathVariable Integer id) {
+		return repository.loadById(id);
 	}
 
 	@GetMapping
@@ -40,7 +39,9 @@ public class PersonsController {
 	@PostMapping
 	public Person create(@RequestBody Person person) {
 		failFor(person);
-		return repository.save(person);
+		person = repository.save(person);
+		// only this way the cat.personId is correctly returned (after being set by repository)
+		return repository.loadById(person.getId());
 	}
 
 	@PutMapping(path = "{id}")
@@ -48,7 +49,9 @@ public class PersonsController {
 		// issues with null cats (search for []):
 		// https://stackoverflow.com/questions/5587482/hibernate-a-collection-with-cascade-all-delete-orphan-was-no-longer-referenc
 		failFor(person);
-		return repository.save(person);
+		repository.save(person);
+		// only this way the cat.personId is correctly returned (after being set by repository)
+		return repository.loadById(person.getId());
 	}
 
 	@DeleteMapping(path = "{id}")
