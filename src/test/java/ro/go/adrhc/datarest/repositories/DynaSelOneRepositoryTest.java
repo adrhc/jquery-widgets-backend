@@ -26,7 +26,7 @@ class DynaSelOneRepositoryTest {
 	@Test
 	@Transactional
 	void findByTitle() {
-		em.persist(new Person(null, "gigi", "gigi", null, List.of(new Cat("cat1"))));
+		em.persist(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
 		List<Person> persons = repository.findByTitle("gigi", "person");
 		log.debug("persons:\n{}", persons.stream().map(Person::toString).collect(Collectors.joining("\n")));
 		assertThat(persons).hasSize(1).element(0)

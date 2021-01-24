@@ -39,7 +39,7 @@ class PersonsRepositoryTest {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Test
 	void findAll() {
-		repository.save(new Person(null, "gigi", "gigi", null, List.of(new Cat("cat1"))));
+		repository.save(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
 		List<Person> persons = repository.findAll();
 		log.debug("persons:\n{}", persons.stream().map(Person::toString).collect(Collectors.joining("\n")));
 		assertThat(persons).hasSize(1).element(0)
@@ -54,7 +54,7 @@ class PersonsRepositoryTest {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Test
 	void repositorySave() {
-		repository.save(new Person(null, "gigi", "gigi", null, List.of(new Cat("cat1"))));
+		repository.save(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
 		List<Person> persons = jdbcTemplate.query("SELECT * FROM person", new BeanPropertyRowMapper<>(Person.class));
 		log.debug("persons:\n{}", persons.stream().map(Person::toString).collect(Collectors.joining("\n")));
 		assertThat(persons).hasSize(1).element(0)
@@ -69,8 +69,8 @@ class PersonsRepositoryTest {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@Test
 	void saveWithFriend() {
-		Person person = repository.save(new Person(null, "gigi", "gigi",
-				new Person(null, "gigi", "gigi", null, List.of(new Cat("cat1"))),
+		Person person = repository.save(new Person("gigi", "gigi",
+				new Person("gigi", "gigi", null, List.of(new Cat("cat1"))),
 				List.of(new Cat("cat1"))));
 		Optional<Person> optional = repository.findById(person.getId());
 		assertThat(optional).isPresent().map(Person::getFriend).isNotEmpty();

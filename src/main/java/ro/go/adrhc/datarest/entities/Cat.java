@@ -7,22 +7,16 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.io.Serializable;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class Cat implements Serializable {
-	@Id
-	@GeneratedValue
-	private Integer id;
+public class Cat extends BaseEntity {
 	private String name;
-	@Column(name = "person_id", insertable = false, updatable = false)
-	private Integer personId;
+	@Column(name = "friend_id")
+	private Integer friendId;
 //	@ManyToOne
 //	private Person person;
 

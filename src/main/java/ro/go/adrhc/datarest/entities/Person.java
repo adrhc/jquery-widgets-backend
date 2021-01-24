@@ -3,8 +3,6 @@ package ro.go.adrhc.datarest.entities;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,19 +11,24 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person implements Serializable {
-	@Id
-	@GeneratedValue
-	private Integer id;
+public class Person extends BaseEntity {
 	private String firstName;
 	private String lastName;
-	@OneToOne(cascade = {CascadeType.PERSIST})
+	@OneToOne
 	@JoinColumn(name = "friend_id")
 	private Person friend;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("name")
 	@JoinColumn(name = "person_id")
 	private List<Cat> cats;
+
+	public Person(Integer id, String firstName, String lastName, Person friend, List<Cat> cats) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.friend = friend;
+		this.cats = cats;
+	}
 
 	@Override
 	public boolean equals(Object o) {

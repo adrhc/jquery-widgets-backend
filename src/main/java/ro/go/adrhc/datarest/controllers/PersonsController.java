@@ -3,6 +3,7 @@ package ro.go.adrhc.datarest.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ro.go.adrhc.datarest.dto.PersonDto;
 import ro.go.adrhc.datarest.dto.Problem;
 import ro.go.adrhc.datarest.entities.Person;
 import ro.go.adrhc.datarest.repositories.PersonsRepository;
@@ -27,8 +28,8 @@ public class PersonsController {
 	}
 
 	@GetMapping(path = "{id}")
-	public Person findById(@PathVariable Integer id) {
-		return repository.loadById(id);
+	public PersonDto findById(@PathVariable Integer id) {
+		return repository.loadDtoById(id);
 	}
 
 	@GetMapping
@@ -37,21 +38,21 @@ public class PersonsController {
 	}
 
 	@PostMapping
-	public Person create(@RequestBody Person person) {
+	public PersonDto create(@RequestBody Person person) {
 		failFor(person);
 		person = repository.save(person);
 		// only this way the cat.personId is correctly returned (after being set by repository)
-		return repository.loadById(person.getId());
+		return repository.loadDtoById(person.getId());
 	}
 
 	@PutMapping(path = "{id}")
-	public Person update(@RequestBody Person person) {
+	public PersonDto update(@RequestBody Person person) {
 		// issues with null cats (search for []):
 		// https://stackoverflow.com/questions/5587482/hibernate-a-collection-with-cascade-all-delete-orphan-was-no-longer-referenc
 		failFor(person);
 		repository.save(person);
 		// only this way the cat.personId is correctly returned (after being set by repository)
-		return repository.loadById(person.getId());
+		return repository.loadDtoById(person.getId());
 	}
 
 	@DeleteMapping(path = "{id}")
