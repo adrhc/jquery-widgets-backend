@@ -1,27 +1,25 @@
-package ro.go.adrhc.datarest.scenarios.scenario1;
+package ro.go.adrhc.datarest.scenarios.scenario2;
 
 import lombok.*;
 import ro.go.adrhc.datarest.entities.BaseEntity;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@ToString
-public class Parent extends BaseEntity {
+@ToString(callSuper = true)
+public class Child2 extends BaseEntity {
 	private String name;
-	@OneToOne(cascade = {CascadeType.PERSIST})
-	@JoinColumn(name = "birth_country_id")
-	private Country birthPlace;
-	@OneToOne
-	@JoinColumn(name = "married_country_id")
-	private Country marriedPlace;
+	@Column(name = "parent_id", updatable = false, insertable = false)
+	private String parentId;
+
+	public Child2(String name) {
+		this.name = name;
+	}
 
 	/**
 	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/
@@ -34,8 +32,8 @@ public class Parent extends BaseEntity {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof Parent)) return false;
-		Parent other = (Parent) o;
+		if (!(o instanceof Child2)) return false;
+		Child2 other = (Child2) o;
 		return id != null && id.equals(other.getId());
 	}
 }

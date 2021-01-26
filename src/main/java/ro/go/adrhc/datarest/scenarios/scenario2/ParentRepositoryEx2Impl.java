@@ -7,15 +7,15 @@ import javax.persistence.EntityManager;
 
 @RequiredArgsConstructor
 @Transactional
-public class ParentRepositoryExImpl implements ParentRepositoryEx {
+public class ParentRepositoryEx2Impl implements ParentRepositoryEx2 {
 	private final EntityManager em;
 
-	public Parent insert(Parent parent) {
+	public Parent2 insert(Parent2 parent) {
 		em.persist(parent);
 		return parent;
 	}
 
-	public Parent update(Parent parent) {
+	public Parent2 update(Parent2 parent) {
 		return em.merge(parent);
 	}
 }

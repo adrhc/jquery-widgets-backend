@@ -7,24 +7,24 @@ import javax.persistence.EntityManager;
 
 @RequiredArgsConstructor
 @Transactional
-public class ParentRepositoryExImpl implements ParentRepositoryEx {
+public class Parent1RepositoryExImpl implements Parent1RepositoryEx {
 	private final EntityManager em;
 
-	public Parent generateParent() {
-		Country marriedPlace = new Country("country2");
+	public Parent1 generateParent() {
+		Country1 marriedPlace = new Country1("country2");
 		em.persist(marriedPlace);
-		Parent parent = new Parent("parent1", new Country("country1"), marriedPlace);
+		Parent1 parent = new Parent1("parent1", new Country1("country1"), marriedPlace);
 //				marriedPlace, Set.of(new Child("child1", null)));
 		em.persist(parent);
 		return parent;
 	}
 
-	public Parent insert(Parent parent) {
+	public Parent1 insert(Parent1 parent) {
 		em.persist(parent);
 		return parent;
 	}
 
-	public Parent update(Parent parent) {
+	public Parent1 update(Parent1 parent) {
 		return em.merge(parent);
 	}
 }
