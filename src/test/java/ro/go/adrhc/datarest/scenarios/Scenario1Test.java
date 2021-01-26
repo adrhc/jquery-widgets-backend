@@ -27,7 +27,7 @@ class Scenario1Test {
 
 	@Transactional(propagation = Propagation.NEVER)
 	@Test
-	void generateParent() {
+	void test() {
 		// birthPlace: CascadeType.PERSIST
 		// marriedPlace: no cascade type set
 		Parent parent1 = parentRepository.generateParent();
