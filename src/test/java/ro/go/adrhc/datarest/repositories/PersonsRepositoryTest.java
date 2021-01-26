@@ -37,7 +37,7 @@ class PersonsRepositoryTest {
 	 * <p>
 	 * Propagation.NOT_SUPPORTED - otherwise cat.person_id will be null
 	 */
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional(propagation = Propagation.NEVER)
 	@Test
 	void findAll() {
 		repository.save(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
@@ -46,13 +46,13 @@ class PersonsRepositoryTest {
 		assertThat(persons).hasSize(1).element(0)
 				.hasFieldOrPropertyWithValue("firstName", "gigi");
 		assertThat(persons.get(0).getCats()).hasSize(1).element(0)
-				.hasFieldOrPropertyWithValue("personId", 1);
+				.hasFieldOrPropertyWithValue("friendId", 1);
 	}
 
 	/**
 	 * Propagation.NOT_SUPPORTED - otherwise repository will commit after jdbcTemplate execution
 	 */
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional(propagation = Propagation.NEVER)
 	@Test
 	void repositorySave() {
 		repository.save(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
@@ -64,7 +64,7 @@ class PersonsRepositoryTest {
 		log.debug("cats:\n{}", cats.stream().map(Cat::toString).collect(Collectors.joining("\n")));
 		assertThat(cats).hasSize(1).element(0)
 				.hasFieldOrPropertyWithValue("name", "cat1")
-				.hasFieldOrPropertyWithValue("personId", 1);
+				.hasFieldOrPropertyWithValue("friendId", 1);
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)

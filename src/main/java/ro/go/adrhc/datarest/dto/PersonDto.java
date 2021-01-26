@@ -19,7 +19,7 @@ public class PersonDto {
 	private Person friend;
 	private List<CatDto> cats;
 
-	public PersonDto(Person friend, List<CatDto> cats, Person person) {
+	public PersonDto(Person person, Person friend, List<CatDto> cats) {
 		this.id = person.getId();
 		this.firstName = person.getFirstName();
 		this.lastName = person.getLastName();

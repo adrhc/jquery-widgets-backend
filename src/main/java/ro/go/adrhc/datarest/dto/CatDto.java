@@ -3,12 +3,14 @@ package ro.go.adrhc.datarest.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import ro.go.adrhc.datarest.entities.Cat;
 import ro.go.adrhc.datarest.entities.Person;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class CatDto {
 	private Integer id;
 	private String name;
