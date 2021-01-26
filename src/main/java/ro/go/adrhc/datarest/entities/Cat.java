@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 @ToString
 public class Cat extends BaseEntity {
 	private String name;
-	@Column(name = "friend_id")
+	@Column(name = "friend_id", insertable = false, updatable = false)
 	private Integer friendId;
 //	@ManyToOne
 //	private Person person;
