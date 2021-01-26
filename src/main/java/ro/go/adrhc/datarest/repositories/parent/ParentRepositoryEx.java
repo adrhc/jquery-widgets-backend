@@ -6,4 +6,6 @@ public interface ParentRepositoryEx {
 	Parent generateParent();
 
 	Parent insert(Parent person);
+
+	Parent update(Parent person);
 }

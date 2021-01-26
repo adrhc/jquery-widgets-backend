@@ -20,9 +20,9 @@ public class Parent extends BaseEntity {
 	@OneToOne
 	@JoinColumn(name = "married_country_id")
 	private Country marriedPlace;
-	@OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
-	@JoinColumn(name = "parent_id")
-	private Set<Child> children;
+//	@OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+//	@JoinColumn(name = "parent_id")
+//	private Set<Child> children;
 
 	/**
 	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/
