@@ -38,5 +38,13 @@ public class Scenario2Test {
 		parent1Opt = parentRepository2.getById(parent1.getId());
 		assertThat(parent1Opt).isPresent().hasValueSatisfying(p2 -> assertThat(p2.getChildren()).hasSize(2));
 		log.debug("2. from DB parent1:\n{}", parent1Opt.get());
+
+		parent1.getChildren().remove(parent1.getChildren().iterator().next());
+		parent1.getChildren().add(new Child2("child3"));
+		parent1 = parentRepository2.update(parent1);
+		log.debug("updated parent1:\n{}", parent1.toString());
+		parent1Opt = parentRepository2.getById(parent1.getId());
+		assertThat(parent1Opt).isPresent().hasValueSatisfying(p2 -> assertThat(p2.getChildren()).hasSize(2));
+		log.debug("2. from DB parent1:\n{}", parent1Opt.get());
 	}
 }
