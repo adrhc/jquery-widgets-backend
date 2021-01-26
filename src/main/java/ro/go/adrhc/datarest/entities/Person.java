@@ -19,7 +19,7 @@ public class Person extends BaseEntity {
 	private Person friend;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("name")
-	@JoinColumn(name = "person_id")
+	@JoinColumn(name = "friend_id")
 	private List<Cat> cats;
 
 	public Person(Integer id, String firstName, String lastName, Person friend, List<Cat> cats) {
