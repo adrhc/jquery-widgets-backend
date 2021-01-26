@@ -1,6 +1,7 @@
 package ro.go.adrhc.datarest.config;
 
 import net.jcip.annotations.NotThreadSafe;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -13,6 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @NotThreadSafe
 public @interface SpringJpaTest {
 }

@@ -1,9 +1,11 @@
 package ro.go.adrhc.datarest.repositories.dynaselone;
 
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import ro.go.adrhc.datarest.config.SpringJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import ro.go.adrhc.datarest.entities.Person;
 import ro.go.adrhc.datarest.repositories.PersonsRepository;
 
@@ -11,8 +13,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringJpaTest
-@ComponentScan(basePackageClasses = {DynaSelOneRepository.class})
+@SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@NotThreadSafe
 class DynaSelOneRepositoryTest {
 	@Autowired
 	private PersonsRepository repository;
