@@ -14,7 +14,7 @@ import java.util.List;
 public class Person extends BaseEntity {
 	private String firstName;
 	private String lastName;
-	@OneToOne
+	@OneToOne(cascade = {CascadeType.PERSIST})
 	@JoinColumn(name = "friend_id")
 	private Person friend;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -23,11 +23,15 @@ public class Person extends BaseEntity {
 	private List<Cat> cats;
 
 	public Person(Integer id, String firstName, String lastName, Person friend, List<Cat> cats) {
+		this(id, firstName, lastName);
+		this.friend = friend;
+		this.cats = cats;
+	}
+
+	public Person(Integer id, String firstName, String lastName) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.friend = friend;
-		this.cats = cats;
 	}
 
 	@Override
