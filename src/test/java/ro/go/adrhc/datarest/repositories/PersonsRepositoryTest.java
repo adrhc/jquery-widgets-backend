@@ -45,7 +45,7 @@ class PersonsRepositoryTest {
 		assertThat(persons).hasSize(1).element(0)
 				.hasFieldOrPropertyWithValue("firstName", "gigi");
 		assertThat(persons.get(0).getCats()).hasSize(1).element(0)
-				.hasFieldOrPropertyWithValue("friendId", 1);
+				.hasFieldOrPropertyWithValue("name", "cat1");
 	}
 
 	/**
@@ -63,7 +63,7 @@ class PersonsRepositoryTest {
 		log.debug("cats:\n{}", cats.stream().map(Cat::toString).collect(Collectors.joining("\n")));
 		assertThat(cats).hasSize(1).element(0)
 				.hasFieldOrPropertyWithValue("name", "cat1")
-				.hasFieldOrPropertyWithValue("friendId", 1);
+				.hasFieldOrPropertyWithValue("ownerId", 1);
 	}
 
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)

@@ -10,7 +10,6 @@ import ro.go.adrhc.datarest.entities.Person;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,25 +18,28 @@ import java.util.stream.Collectors;
 public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 	private final EntityManager em;
 
-	private static <T> void initCollection(Collection<T> collection) {
-		if (collection == null) {
-			return;
+	public Person insertOrUpdate(Person person) {
+		if (person.getId() == null) {
+			return insert(person);
+		} else {
+			return update(person);
 		}
-		collection.size();
 	}
 
-	public Person create(Person person) {
+	public Person update(Person person) {
+		person.setFriend(getFkEntity(Person.class, person.getFriend()));
+		return em.merge(person);
+	}
+
+	public Person insert(Person person) {
 		person.setFriend(getFkEntity(Person.class, person.getFriend()));
 		em.persist(person);
-		if (person.getCats() == null) {
-			return person;
-		}
 		return person;
 	}
 
 	private <T extends BaseEntity> T getFkEntity(Class<T> clazz, T fkEntity) {
 		if (fkEntity == null || fkEntity.getId() == null) {
-			return null;
+			return fkEntity;
 		}
 		return em.find(clazz, fkEntity.getId());
 	}
@@ -52,10 +54,12 @@ public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 		if (person == null) {
 			return null;
 		}
-		// get the cats before clearing them on person detach
-		List<CatDto> catsDto = catsDtoOf(person.getCats());
 		// detach and remove friend's references (friend & cats)
+		// person.getFriend() might be detached by catsDtoOf
 		Person friend = detachPerson(person.getFriend());
+		// get the cats before clearing them on person detach
+		// this detaches persons and might detach above person's friend too
+		List<CatDto> catsDto = catsDtoOf(person.getCats());
 		// detach and remove person's references (friend & cats)
 		person = detachPerson(person);
 		return new PersonDto(person, friend, catsDto);

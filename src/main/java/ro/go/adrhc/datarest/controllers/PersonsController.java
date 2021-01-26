@@ -40,7 +40,7 @@ public class PersonsController {
 	@PostMapping
 	public PersonDto create(@RequestBody Person person) {
 		failFor(person);
-		person = repository.save(person);
+		person = repository.insertOrUpdate(person);
 		// only this way the cat.personId is correctly returned (after being set by repository)
 		return repository.loadDtoById(person.getId());
 	}
