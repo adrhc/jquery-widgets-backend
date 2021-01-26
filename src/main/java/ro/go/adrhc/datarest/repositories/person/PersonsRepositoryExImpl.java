@@ -52,9 +52,13 @@ public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 		if (person == null) {
 			return null;
 		}
-		// detach and remove friend's references
+		// get the cats before clearing them on person detach
+		List<CatDto> catsDto = catsDtoOf(person.getCats());
+		// detach and remove friend's references (friend & cats)
 		Person friend = detachPerson(person.getFriend());
-		return new PersonDto(friend, catsDtoOf(person.getCats()), person);
+		// detach and remove person's references (friend & cats)
+		person = detachPerson(person);
+		return new PersonDto(person, friend, catsDto);
 	}
 
 	private List<CatDto> catsDtoOf(List<Cat> cats) {
@@ -63,13 +67,17 @@ public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 		}
 		return cats.stream()
 				.map(cat -> {
-					if (cat.getFriendId() != null) {
-						Person catFriend = detachPerson(em.find(Person.class, cat.getFriendId()));
-						return new CatDto(catFriend, cat);
+					if (cat.getFriendId() == null) {
+						return new CatDto(cat);
 					}
-					return new CatDto(cat);
+					Person catFriend = detachPersonById(cat.getFriendId());
+					return new CatDto(catFriend, cat);
 				})
 				.collect(Collectors.toList());
+	}
+
+	private Person detachPersonById(Integer personId) {
+		return detachPerson(em.find(Person.class, personId));
 	}
 
 	private Person detachPerson(Person person) {
