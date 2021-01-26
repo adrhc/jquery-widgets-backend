@@ -1,6 +1,4 @@
-package ro.go.adrhc.datarest.repositories.parent;
-
-import ro.go.adrhc.datarest.entities.scenario1.Parent;
+package ro.go.adrhc.datarest.scenarios.scenario1;
 
 public interface ParentRepositoryEx {
 	Parent generateParent();

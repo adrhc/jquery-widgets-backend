@@ -1,9 +1,7 @@
-package ro.go.adrhc.datarest.repositories.parent;
+package ro.go.adrhc.datarest.scenarios.scenario1;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import ro.go.adrhc.datarest.entities.scenario1.Country;
-import ro.go.adrhc.datarest.entities.scenario1.Parent;
 
 import javax.persistence.EntityManager;
 

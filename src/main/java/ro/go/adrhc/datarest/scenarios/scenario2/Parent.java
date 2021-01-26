@@ -1,9 +1,12 @@
-package ro.go.adrhc.datarest.entities.scenario1;
+package ro.go.adrhc.datarest.scenarios.scenario2;
 
 import lombok.*;
 import ro.go.adrhc.datarest.entities.BaseEntity;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -14,15 +17,9 @@ import java.util.Set;
 @ToString
 public class Parent extends BaseEntity {
 	private String name;
-	@OneToOne(cascade = {CascadeType.PERSIST})
-	@JoinColumn(name = "birth_country_id")
-	private Country birthPlace;
-	@OneToOne
-	@JoinColumn(name = "married_country_id")
-	private Country marriedPlace;
-//	@OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
-//	@JoinColumn(name = "parent_id")
-//	private Set<Child> children;
+	@OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@JoinColumn(name = "parent_id")
+	private Set<Child> children;
 
 	/**
 	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/

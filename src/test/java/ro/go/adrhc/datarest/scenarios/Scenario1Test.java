@@ -1,4 +1,4 @@
-package ro.go.adrhc.datarest.repositories.parent;
+package ro.go.adrhc.datarest.scenarios;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -7,9 +7,10 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ro.go.adrhc.datarest.config.SpringJpaTest;
-import ro.go.adrhc.datarest.entities.scenario1.Country;
-import ro.go.adrhc.datarest.entities.scenario1.Parent;
-import ro.go.adrhc.datarest.repositories.CountryRepository;
+import ro.go.adrhc.datarest.scenarios.scenario1.Country;
+import ro.go.adrhc.datarest.scenarios.scenario1.CountryRepository;
+import ro.go.adrhc.datarest.scenarios.scenario1.Parent;
+import ro.go.adrhc.datarest.scenarios.scenario1.ParentRepository;
 
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
 @SpringJpaTest
-class ParentRepositoryExTest {
+class Scenario1Test {
 	@Autowired
 	private ParentRepository parentRepository;
 	@Autowired
@@ -27,13 +28,14 @@ class ParentRepositoryExTest {
 	@Transactional(propagation = Propagation.NEVER)
 	@Test
 	void generateParent() {
+		// birthPlace: CascadeType.PERSIST
+		// marriedPlace: no cascade type set
 		Parent parent1 = parentRepository.generateParent();
 		log.debug("inserted parent1:\n{}", parent1.toString());
 
+		// parent insert: detached marriedPlace not changed in DB
 		parent1.getBirthPlace().setName(parent1.getBirthPlace().getName() + "-changed");
 		parent1.getMarriedPlace().setName(parent1.getMarriedPlace() + "-changed");
-		// birthPlace: CascadeType.PERSIST
-		// marriedPlace: no cascade type set
 		Parent parent2 = new Parent("parent2", null, parent1.getMarriedPlace());
 		parent2 = parentRepository.insert(parent2);
 		log.debug("inserted parent2:\n{}", parent2.toString());
@@ -43,6 +45,7 @@ class ParentRepositoryExTest {
 		assertThat(marriedPlaceParent1aOpt).isPresent()
 				.hasValueSatisfying((c) -> assertThat(c.getName()).doesNotEndWith("-changed"));
 
+		// parent insert: detached birthPlace not accepted
 		Parent parent3 = new Parent("parent3", parent1.getBirthPlace(), parent1.getMarriedPlace());
 		// ERROR: detached entity (parent1.getBirthPlace()) passed to persist
 		assertThrows(InvalidDataAccessApiUsageException.class, () -> parentRepository.insert(parent3));
@@ -51,7 +54,7 @@ class ParentRepositoryExTest {
 		Parent parent4 = new Parent("parent4", new Country("country4"), marriedPlaceParent1a);
 		parent4 = parentRepository.insert(parent4);
 
-		// birthPlace not changed in DB
+		// parent update: detached birthPlace not changed in DB
 		parent4.setName(parent4.getName() + "-changed1");
 		parent4.getBirthPlace().setName(parent4.getBirthPlace().getName() + "-changed");
 		parent4 = parentRepository.update(parent4);
@@ -61,7 +64,7 @@ class ParentRepositoryExTest {
 		assertThat(birthPlace4).isPresent()
 				.hasValueSatisfying((c) -> assertThat(c.getName()).doesNotEndWith("-changed"));
 
-		// marriedPlace not changed in DB
+		// parent update: detached marriedPlace not changed in DB
 		parent4.setName(parent4.getName() + "-changed2");
 		parent4.getMarriedPlace().setName(parent4.getMarriedPlace().getName() + "-changed2");
 		parent4 = parentRepository.update(parent4);
