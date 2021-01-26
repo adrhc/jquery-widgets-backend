@@ -25,6 +25,7 @@ public class Scenario2Test {
 	@Transactional(propagation = Propagation.NEVER)
 	@Test
 	void test() {
+		// creating parent with 1 child
 		Parent2 parent1 = new Parent2("parent1", new HashSet<>(Set.of(new Child2("child1"))));
 		parent1 = parentRepository2.insert(parent1);
 		log.debug("inserted parent1:\n{}", parent1.toString());
@@ -32,6 +33,7 @@ public class Scenario2Test {
 		assertThat(parent1Opt).isPresent().hasValueSatisfying(p2 -> assertThat(p2.getChildren()).hasSize(1));
 		log.debug("1. from DB parent1:\n{}", parent1Opt.get());
 
+		// updating parent by adding 1 child
 		parent1.getChildren().add(new Child2("child2"));
 		parent1 = parentRepository2.update(parent1);
 		log.debug("updated parent1:\n{}", parent1.toString());
@@ -39,6 +41,7 @@ public class Scenario2Test {
 		assertThat(parent1Opt).isPresent().hasValueSatisfying(p2 -> assertThat(p2.getChildren()).hasSize(2));
 		log.debug("2. from DB parent1:\n{}", parent1Opt.get());
 
+		// updating parent by adding 1 child and removing the 1th existing child
 		parent1.getChildren().remove(parent1.getChildren().iterator().next());
 		parent1.getChildren().add(new Child2("child3"));
 		parent1 = parentRepository2.update(parent1);
