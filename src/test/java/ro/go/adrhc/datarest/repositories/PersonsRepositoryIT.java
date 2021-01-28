@@ -93,7 +93,7 @@ class PersonsRepositoryIT {
 		person.setFirstName(person.getFirstName() + "-changed");
 		person.setCats(List.of(person.getCats().get(1), new Cat("cat3")));
 		person.setFriend(new Person("friend2", "friend2"));
-		person = personsRepository.save(person); // aka em.merge
+		person = personsRepository.save(person); // aka entityManager.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
@@ -122,7 +122,7 @@ class PersonsRepositoryIT {
 		person.setFriend(friend2);
 		// same result as with person.setFriend(friend2):
 //		person.setFriend(new Person(friend2.getId()));
-		person = personsRepository.save(person); // aka em.merge
+		person = personsRepository.save(person); // aka entityManager.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
@@ -146,7 +146,7 @@ class PersonsRepositoryIT {
 		person.getFriend().setFirstName(person.getFriend().getFirstName() + "-changed");
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
-		person = personsRepository.save(person); // aka em.merge
+		person = personsRepository.save(person); // aka entityManager.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
@@ -191,7 +191,7 @@ class PersonsRepositoryIT {
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
 		person.setFriend(new Person("friend2", "friend2"));
-		person = personsRepository.save(person); // aka em.merge
+		person = personsRepository.save(person); // aka entityManager.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
@@ -222,7 +222,7 @@ class PersonsRepositoryIT {
 		person.setFriend(friend2);
 		// same issue as with person.setFriend(friend2):
 //		person.setFriend(new Person(friend2.getId(), "friend2", "friend2"));
-		person = personsRepository.save(person); // aka em.merge
+		person = personsRepository.save(person); // aka entityManager.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
@@ -246,7 +246,7 @@ class PersonsRepositoryIT {
 		person.getFriend().setFirstName(person.getFriend().getFirstName() + "-changed");
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
-		person = personsRepository.save(person); // aka em.merge
+		person = personsRepository.save(person); // aka entityManager.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
