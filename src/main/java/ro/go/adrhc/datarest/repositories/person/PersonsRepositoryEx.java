@@ -14,5 +14,7 @@ public interface PersonsRepositoryEx {
 
 	Person insert(Person person);
 
+	Person merge(Person person);
+
 	Person insertOrUpdate(Person person);
 }

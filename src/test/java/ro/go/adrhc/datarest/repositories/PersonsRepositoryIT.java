@@ -248,12 +248,12 @@ class PersonsRepositoryIT {
 	@Test
 	void newPersonWithDetachedFriend() {
 		Cat catX = catsRepository.save(new Cat("catX"));
-		Person person = personsRepository.insert(generatePerson());
+		Person person = generatePerson();
 		person.getCats().add(catX);
 		Person friend1 = personsRepository.insert(new Person("friend1", "friend1"));
 		friend1.setFirstName(friend1.getFirstName() + "-changed");
 		person.setFriend(friend1);
-		person = personsRepository.save(person);
+		person = personsRepository.merge(person);
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getCats()).extracting(Cat::getName).contains("cat1", "catX");
 		assertThat(person.getFirstName()).isEqualTo("gigi");

@@ -34,6 +34,10 @@ public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 		return person;
 	}
 
+	public Person merge(Person person) {
+		return em.merge(person);
+	}
+
 	private <T extends BaseEntity> T getFkEntity(Class<T> clazz, T fkEntity) {
 		if (fkEntity == null || fkEntity.getId() == null) {
 			return fkEntity;
