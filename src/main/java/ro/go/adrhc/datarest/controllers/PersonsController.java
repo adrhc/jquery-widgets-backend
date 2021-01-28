@@ -40,7 +40,7 @@ public class PersonsController {
 	@PostMapping
 	public PersonDto create(@RequestBody Person person) {
 		failFor(person);
-		person = repository.insertOrUpdate(person);
+		person = repository.merge(person);
 		// only this way the cat.personId is correctly returned (after being set by repository)
 		return repository.loadDtoById(person.getId());
 	}
@@ -50,7 +50,7 @@ public class PersonsController {
 		// issues with null cats (search for []):
 		// https://stackoverflow.com/questions/5587482/hibernate-a-collection-with-cascade-all-delete-orphan-was-no-longer-referenc
 		failFor(person);
-		repository.save(person);
+		repository.merge(person);
 		// only this way the cat.personId is correctly returned (after being set by repository)
 		return repository.loadDtoById(person.getId());
 	}

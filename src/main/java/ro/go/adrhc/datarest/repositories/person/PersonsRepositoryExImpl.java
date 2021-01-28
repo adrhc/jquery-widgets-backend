@@ -19,16 +19,6 @@ import java.util.stream.Collectors;
 public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 	private final EntityManager em;
 
-	public Person insertOrUpdate(Person person) {
-		if (person.getId() == null) {
-			// don't call this.insert here
-			em.persist(person);
-			return person;
-		} else {
-			return em.merge(person);
-		}
-	}
-
 	public Person insert(Person person) {
 		em.persist(person);
 		return person;
