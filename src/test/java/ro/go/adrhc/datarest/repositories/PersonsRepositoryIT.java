@@ -91,16 +91,14 @@ class PersonsRepositoryIT {
 		log.debug("person:\n{}", person);
 
 		person.setFirstName(person.getFirstName() + "-changed");
-		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
-				person.getCats().get(1).getName()), new Cat("cat3")));
+		person.setCats(List.of(person.getCats().get(1), new Cat("cat3")));
 		person.setFriend(new Person("friend2", "friend2"));
-		// equivalent to entityManager.merge(person)
 		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
-		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
+		assertThat(person.getCats()).extracting(Cat::getName).contains("cat2", "cat3");
 		assertThat(person.getFriend().getId()).isNotNull();
 		assertThat(person.getFriend().getFirstName()).isNull();
 	}
@@ -124,7 +122,6 @@ class PersonsRepositoryIT {
 		person.setFriend(friend2);
 		// same result as with person.setFriend(friend2):
 //		person.setFriend(new Person(friend2.getId()));
-		// equivalent to entityManager.merge(person)
 		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
@@ -149,7 +146,6 @@ class PersonsRepositoryIT {
 		person.getFriend().setFirstName(person.getFriend().getFirstName() + "-changed");
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
-		// equivalent to entityManager.merge(person)
 		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
@@ -173,7 +169,6 @@ class PersonsRepositoryIT {
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
 		person.setFriend(new Person("friend2", "friend2"));
-		// equivalent to entityManager.merge(person)
 		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
@@ -205,7 +200,6 @@ class PersonsRepositoryIT {
 		person.setFriend(friend2);
 		// same issue as with person.setFriend(friend2):
 //		person.setFriend(new Person(friend2.getId(), "friend2", "friend2"));
-		// equivalent to entityManager.merge(person)
 		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
@@ -229,7 +223,6 @@ class PersonsRepositoryIT {
 		person.getFriend().setFirstName(person.getFriend().getFirstName() + "-changed");
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
-		// equivalent to entityManager.merge(person)
 		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
