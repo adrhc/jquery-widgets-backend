@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ro.go.adrhc.datarest.dto.PersonDto;
 import ro.go.adrhc.datarest.entities.Person;
-import ro.go.adrhc.datarest.repositories.PersonsRepository;
+import ro.go.adrhc.datarest.repositories.person.PersonsRepository;
 
 import java.util.List;
 

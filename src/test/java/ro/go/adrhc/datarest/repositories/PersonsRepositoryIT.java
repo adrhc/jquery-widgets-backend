@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ro.go.adrhc.datarest.dto.PersonDto;
 import ro.go.adrhc.datarest.entities.Cat;
 import ro.go.adrhc.datarest.entities.Person;
+import ro.go.adrhc.datarest.repositories.person.PersonsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional(propagation = Propagation.NEVER)
 class PersonsRepositoryIT {
 	@Autowired
-	private PersonsRepository repository;
+	private CatsRepository catsRepository;
+	@Autowired
+	private PersonsRepository personsRepository;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
@@ -41,8 +44,8 @@ class PersonsRepositoryIT {
 	 */
 	@Test
 	void findAllDto() {
-		repository.save(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
-		List<PersonDto> persons = repository.findAllDto();
+		personsRepository.save(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
+		List<PersonDto> persons = personsRepository.findAllDto();
 		log.debug("persons:\n{}", persons.stream().map(PersonDto::toString).collect(Collectors.joining("\n")));
 		assertThat(persons).hasSize(1).element(0)
 				.hasFieldOrPropertyWithValue("firstName", "gigi");
@@ -55,7 +58,7 @@ class PersonsRepositoryIT {
 	 */
 	@Test
 	void save() {
-		repository.save(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
+		personsRepository.save(new Person("gigi", "gigi", null, List.of(new Cat("cat1"))));
 		List<Person> persons = jdbcTemplate.query("SELECT * FROM person", new BeanPropertyRowMapper<>(Person.class));
 		log.debug("persons:\n{}", persons.stream().map(Person::toString).collect(Collectors.joining("\n")));
 		assertThat(persons).hasSize(1).element(0)
@@ -69,16 +72,16 @@ class PersonsRepositoryIT {
 
 	@Test
 	void saveWithFriend() {
-		Person person = repository.save(new Person("gigi", "gigi",
+		Person person = personsRepository.save(new Person("gigi", "gigi",
 				new Person("gigi", "gigi", null, List.of(new Cat("cat1"))),
 				List.of(new Cat("cat1"))));
-		Optional<Person> optional = repository.findById(person.getId());
+		Optional<Person> optional = personsRepository.findById(person.getId());
 		assertThat(optional).isPresent().map(Person::getFriend).isNotEmpty();
 	}
 
 	/**
 	 * friend use CascadeType.PERSIST only
-	 *
+	 * <p>
 	 * firstName + cats changes + transient friend (only the id is saved)
 	 */
 	@Test
@@ -92,10 +95,10 @@ class PersonsRepositoryIT {
 				person.getCats().get(1).getName()), new Cat("cat3")));
 		person.setFriend(new Person("friend2", "friend2"));
 		// equivalent to entityManager.merge(person)
-		person = repository.save(person);
+		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
-		log.debug("person:\n{}", repository.loadInitializedById(person.getId()));
+		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
 		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
 		assertThat(person.getFriend().getId()).isNotNull();
@@ -104,7 +107,7 @@ class PersonsRepositoryIT {
 
 	/**
 	 * friend use CascadeType.PERSIST only
-	 *
+	 * <p>
 	 * firstName + cats changes + detached friend (name doesn't change)
 	 */
 	@Test
@@ -116,16 +119,16 @@ class PersonsRepositoryIT {
 		person.setFirstName(person.getFirstName() + "-changed");
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
-		Person friend2 = repository.insert(new Person("friend2", "friend2"));
+		Person friend2 = personsRepository.insert(new Person("friend2", "friend2"));
 		friend2.setFirstName(friend2.getFirstName() + "-changed");
 		person.setFriend(friend2);
 		// same result as with person.setFriend(friend2):
 //		person.setFriend(new Person(friend2.getId()));
 		// equivalent to entityManager.merge(person)
-		person = repository.save(person);
+		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
-		log.debug("person:\n{}", repository.loadInitializedById(person.getId()));
+		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
 		assertThat(person.getFriend().getFirstName()).isEqualTo("friend2");
@@ -133,7 +136,7 @@ class PersonsRepositoryIT {
 
 	/**
 	 * friend use CascadeType.PERSIST only
-	 *
+	 * <p>
 	 * firstName + cats changes + same friend (name doesn't change)
 	 */
 	@Test
@@ -147,10 +150,10 @@ class PersonsRepositoryIT {
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
 		// equivalent to entityManager.merge(person)
-		person = repository.save(person);
+		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
-		log.debug("person:\n{}", repository.loadInitializedById(person.getId()));
+		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
 		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1");
@@ -158,7 +161,7 @@ class PersonsRepositoryIT {
 
 	/**
 	 * friend use CascadeType.PERSIST + CascadeType.MERGE
-	 *
+	 * <p>
 	 * firstName + cats changes + new transient friend
 	 */
 	@Test
@@ -171,10 +174,10 @@ class PersonsRepositoryIT {
 				person.getCats().get(1).getName()), new Cat("cat3")));
 		person.setFriend(new Person("friend2", "friend2"));
 		// equivalent to entityManager.merge(person)
-		person = repository.save(person);
+		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
-		log.debug("person:\n{}", repository.loadInitializedById(person.getId()));
+		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
 		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
 		assertThat(person.getFriend().getFirstName()).isEqualTo("friend2");
@@ -182,9 +185,9 @@ class PersonsRepositoryIT {
 
 	/**
 	 * friend use CascadeType.PERSIST + CascadeType.MERGE + cats initialized with new ArrayList<>()
-	 *
+	 * <p>
 	 * firstName + cats changes + detached new friend (name does change)
-	 *
+	 * <p>
 	 * cats initialized with new ArrayList<>() solves:
 	 * JpaSystemException: A collection with cascade="all-delete-orphan" was no longer referenced by the owning entity instance: ro.go.adrhc.datarest.entities.Person.cats
 	 * see https://stackoverflow.com/questions/5587482/hibernate-a-collection-with-cascade-all-delete-orphan-was-no-longer-referenc
@@ -197,16 +200,16 @@ class PersonsRepositoryIT {
 		person.setFirstName(person.getFirstName() + "-changed");
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
-		Person friend2 = repository.insert(new Person("friend2", "friend2"));
+		Person friend2 = personsRepository.insert(new Person("friend2", "friend2"));
 		friend2.setFirstName(friend2.getFirstName() + "-changed");
 		person.setFriend(friend2);
 		// same issue as with person.setFriend(friend2):
 //		person.setFriend(new Person(friend2.getId(), "friend2", "friend2"));
 		// equivalent to entityManager.merge(person)
-		person = repository.save(person);
+		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
-		log.debug("person:\n{}", repository.loadInitializedById(person.getId()));
+		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
 		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
 		assertThat(person.getFriend().getFirstName()).isEqualTo("friend2-changed");
@@ -214,7 +217,7 @@ class PersonsRepositoryIT {
 
 	/**
 	 * friend use CascadeType.PERSIST + CascadeType.MERGE
-	 *
+	 * <p>
 	 * firstName + cats changes + detached same friend (name does change)
 	 */
 	@Test
@@ -227,21 +230,45 @@ class PersonsRepositoryIT {
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
 		// equivalent to entityManager.merge(person)
-		person = repository.save(person);
+		person = personsRepository.save(person);
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
-		log.debug("person:\n{}", repository.loadInitializedById(person.getId()));
+		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
 		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1-changed");
 	}
 
+
+	/**
+	 * friend use CascadeType.PERSIST + CascadeType.MERGE
+	 * <p>
+	 * new person + detached friend (name does change)
+	 */
+	@Test
+	void newPersonWithDetachedFriend() {
+		Cat catX = catsRepository.save(new Cat("catX"));
+		Person person = personsRepository.insert(generatePerson());
+		person.getCats().add(catX);
+		Person friend1 = personsRepository.insert(new Person("friend1", "friend1"));
+		friend1.setFirstName(friend1.getFirstName() + "-changed");
+		person.setFriend(friend1);
+		person = personsRepository.save(person);
+		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
+		assertThat(person.getCats()).extracting(Cat::getName).contains("cat1", "catX");
+		assertThat(person.getFirstName()).isEqualTo("gigi");
+		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1-changed");
+	}
+
 	private Person createThenReloadPerson() {
-		Person person = repository.insert(new Person(
-				"gigi", "gigi",
+		Person person = personsRepository.insert(generatePerson());
+		return personsRepository.loadInitializedById(person.getId());
+	}
+
+	private Person generatePerson() {
+		return new Person("gigi", "gigi",
 				new Person("friend1", "friend1",
 						null, List.of(new Cat("friend1-cat1"))),
-				new ArrayList<>(List.of(new Cat("cat1"), new Cat("cat2")))));
-		return repository.loadInitializedById(person.getId());
+				new ArrayList<>(List.of(new Cat("cat1"), new Cat("cat2"))));
 	}
 }

@@ -1,4 +1,4 @@
-package ro.go.adrhc.datarest.repositories;
+package ro.go.adrhc.datarest.repositories.person;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import ro.go.adrhc.datarest.entities.Person;
