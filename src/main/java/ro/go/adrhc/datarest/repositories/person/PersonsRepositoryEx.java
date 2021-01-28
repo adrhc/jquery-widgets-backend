@@ -10,9 +10,9 @@ public interface PersonsRepositoryEx {
 
 	PersonDto loadDtoById(Integer id);
 
-	Person insert(Person person);
+	Person loadInitializedById(Integer id);
 
-	Person update(Person person);
+	Person insert(Person person);
 
 	Person insertOrUpdate(Person person);
 }

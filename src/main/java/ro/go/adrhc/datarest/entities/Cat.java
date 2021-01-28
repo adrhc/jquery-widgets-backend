@@ -26,6 +26,11 @@ public class Cat extends BaseEntity {
 		this.name = name;
 	}
 
+	public Cat(Integer id, String name) {
+		super(id);
+		this.name = name;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

@@ -1,6 +1,7 @@
 package ro.go.adrhc.datarest.repositories.person;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 import ro.go.adrhc.datarest.dto.CatDto;
 import ro.go.adrhc.datarest.dto.PersonDto;
@@ -20,19 +21,15 @@ public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 
 	public Person insertOrUpdate(Person person) {
 		if (person.getId() == null) {
-			return insert(person);
+			// don't call this.insert here
+			em.persist(person);
+			return person;
 		} else {
-			return update(person);
+			return em.merge(person);
 		}
 	}
 
-	public Person update(Person person) {
-		person.setFriend(getFkEntity(Person.class, person.getFriend()));
-		return em.merge(person);
-	}
-
 	public Person insert(Person person) {
-		person.setFriend(getFkEntity(Person.class, person.getFriend()));
 		em.persist(person);
 		return person;
 	}
@@ -42,6 +39,19 @@ public class PersonsRepositoryExImpl implements PersonsRepositoryEx {
 			return fkEntity;
 		}
 		return em.find(clazz, fkEntity.getId());
+	}
+
+	public Person loadInitializedById(Integer id) {
+		Person person = em.find(Person.class, id);
+		this.initializePerson(person);
+		return person;
+	}
+
+	private void initializePerson(Person person) {
+		Hibernate.initialize(person.getCats());
+		if (person.getFriend() != null) {
+			initializePerson(person.getFriend());
+		}
 	}
 
 	public PersonDto loadDtoById(Integer id) {
