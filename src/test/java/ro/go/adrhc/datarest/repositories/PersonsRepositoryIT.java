@@ -106,7 +106,7 @@ class PersonsRepositoryIT {
 	/**
 	 * friend use CascadeType.PERSIST only
 	 * <p>
-	 * firstName + cats changes + detached friend (name doesn't change)
+	 * firstName + cats changes + detached friend (firstName doesn't change)
 	 */
 	@Test
 	@Disabled
@@ -134,7 +134,7 @@ class PersonsRepositoryIT {
 	/**
 	 * friend use CascadeType.PERSIST only
 	 * <p>
-	 * firstName + cats changes + same friend (name doesn't change)
+	 * firstName + cats changes + same friend (firstName doesn't change)
 	 */
 	@Test
 	@Disabled
@@ -158,7 +158,7 @@ class PersonsRepositoryIT {
 	/**
 	 * friend use CascadeType.PERSIST
 	 * <p>
-	 * new person + detached friend (name does change)
+	 * new person + detached friend (firstName does change)
 	 */
 	@Test
 	void newPersonWithDetachedFriend1() {
@@ -173,7 +173,7 @@ class PersonsRepositoryIT {
 		person = personsRepository.merge(person);
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getFirstName()).isEqualTo("gigi");
-		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1"); // CascadeType.MERGE not applied
+		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1"); // CascadeType.MERGE not applied,
 		assertThat(person.getCats()).extracting(Cat::getName).containsExactlyInAnyOrder("cat1", "cat2", "catX");
 	}
 
@@ -203,7 +203,7 @@ class PersonsRepositoryIT {
 	/**
 	 * friend use CascadeType.PERSIST + CascadeType.MERGE + cats initialized with new ArrayList<>()
 	 * <p>
-	 * firstName + cats changes + detached new friend (name does change)
+	 * firstName + cats changes + detached new friend (firstName does change)
 	 * <p>
 	 * cats initialized with new ArrayList<>() solves:
 	 * JpaSystemException: A collection with cascade="all-delete-orphan" was no longer referenced by the owning entity instance: ro.go.adrhc.datarest.entities.Person.cats
@@ -235,7 +235,7 @@ class PersonsRepositoryIT {
 	/**
 	 * friend use CascadeType.PERSIST + CascadeType.MERGE
 	 * <p>
-	 * firstName + cats changes + detached same friend (name does change)
+	 * firstName + cats changes + detached same friend (firstName does change)
 	 */
 	@Test
 	void mergeByAdding1TransientCatAndKeep1Another2() {
@@ -259,7 +259,7 @@ class PersonsRepositoryIT {
 	/**
 	 * friend use CascadeType.PERSIST + CascadeType.MERGE
 	 * <p>
-	 * new person + detached friend (name does change)
+	 * new person + detached friend (firstName does change)
 	 */
 	@Test
 	void newPersonWithDetachedFriend2() {
