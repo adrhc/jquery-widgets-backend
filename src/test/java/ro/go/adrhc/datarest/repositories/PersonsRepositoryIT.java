@@ -253,6 +253,8 @@ class PersonsRepositoryIT {
 		Person friend1 = personsRepository.insert(new Person("friend1", "friend1"));
 		friend1.setFirstName(friend1.getFirstName() + "-changed");
 		person.setFriend(friend1);
+		// PersistentObjectException: detached entity passed to persist: ro.go.adrhc.datarest.entities.Person
+//		person = personsRepository.insert(person);
 		person = personsRepository.merge(person);
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getCats()).extracting(Cat::getName).contains("cat1", "catX");
