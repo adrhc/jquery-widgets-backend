@@ -82,7 +82,7 @@ class PersonsRepositoryIT {
 	/**
 	 * friend use CascadeType.PERSIST only
 	 * <p>
-	 * firstName + cats changes + transient friend (only the id is saved)
+	 * firstName + cats changes + transient friend (only the id is saved, the firstName remains null)
 	 */
 	@Test
 	@Disabled
@@ -93,14 +93,14 @@ class PersonsRepositoryIT {
 		person.setFirstName(person.getFirstName() + "-changed");
 		person.setCats(List.of(person.getCats().get(1), new Cat("cat3")));
 		person.setFriend(new Person("friend2", "friend2"));
-		person = personsRepository.save(person);
+		person = personsRepository.save(person); // aka em.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
-		assertThat(person.getCats()).extracting(Cat::getName).contains("cat2", "cat3");
-		assertThat(person.getFriend().getId()).isNotNull();
-		assertThat(person.getFriend().getFirstName()).isNull();
+		assertThat(person.getFriend().getId()).isNotNull(); // CascadeType.PERSIST applied, id != null
+		assertThat(person.getFriend().getFirstName()).isNull(); // CascadeType.MERGE not applied
+		assertThat(person.getCats()).extracting(Cat::getName).containsExactlyInAnyOrder("cat2", "cat3");
 	}
 
 	/**
@@ -122,13 +122,13 @@ class PersonsRepositoryIT {
 		person.setFriend(friend2);
 		// same result as with person.setFriend(friend2):
 //		person.setFriend(new Person(friend2.getId()));
-		person = personsRepository.save(person);
+		person = personsRepository.save(person); // aka em.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
-		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
-		assertThat(person.getFriend().getFirstName()).isEqualTo("friend2");
+		assertThat(person.getFriend().getFirstName()).isEqualTo("friend2"); // CascadeType.MERGE not applied
+		assertThat(person.getCats()).extracting(Cat::getName).containsExactlyInAnyOrder("cat2", "cat3");
 	}
 
 	/**
@@ -146,13 +146,35 @@ class PersonsRepositoryIT {
 		person.getFriend().setFirstName(person.getFriend().getFirstName() + "-changed");
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
-		person = personsRepository.save(person);
+		person = personsRepository.save(person); // aka em.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
-		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
-		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1");
+		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1"); // CascadeType.MERGE not applied
+		assertThat(person.getCats()).extracting(Cat::getName).containsExactlyInAnyOrder("cat2", "cat3");
+	}
+
+	/**
+	 * friend use CascadeType.PERSIST
+	 * <p>
+	 * new person + detached friend (name does change)
+	 */
+	@Test
+	void newPersonWithDetachedFriend1() {
+		Person person = generatePerson();
+		Cat catX = catsRepository.save(new Cat("catX"));
+		person.getCats().add(catX);
+		Person friend1 = personsRepository.insert(new Person("friend1", "friend1"));
+		friend1.setFirstName(friend1.getFirstName() + "-changed");
+		person.setFriend(friend1);
+		// PersistentObjectException: detached entity passed to persist: ro.go.adrhc.datarest.entities.Person
+//		person = personsRepository.insert(person);
+		person = personsRepository.merge(person);
+		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
+		assertThat(person.getFirstName()).isEqualTo("gigi");
+		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1"); // CascadeType.MERGE not applied
+		assertThat(person.getCats()).extracting(Cat::getName).containsExactlyInAnyOrder("cat1", "cat2", "catX");
 	}
 
 	/**
@@ -169,7 +191,7 @@ class PersonsRepositoryIT {
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
 		person.setFriend(new Person("friend2", "friend2"));
-		person = personsRepository.save(person);
+		person = personsRepository.save(person); // aka em.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
@@ -200,12 +222,13 @@ class PersonsRepositoryIT {
 		person.setFriend(friend2);
 		// same issue as with person.setFriend(friend2):
 //		person.setFriend(new Person(friend2.getId(), "friend2", "friend2"));
-		person = personsRepository.save(person);
+		person = personsRepository.save(person); // aka em.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
 		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
+		// CascadeType.MERGE applied
 		assertThat(person.getFriend().getFirstName()).isEqualTo("friend2-changed");
 	}
 
@@ -223,15 +246,15 @@ class PersonsRepositoryIT {
 		person.getFriend().setFirstName(person.getFriend().getFirstName() + "-changed");
 		person.setCats(List.of(new Cat(person.getCats().get(1).getId(),
 				person.getCats().get(1).getName()), new Cat("cat3")));
-		person = personsRepository.save(person);
+		person = personsRepository.save(person); // aka em.merge
 
 		// solving: person.friend.cats: failed to lazily initialize a collection
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
 		assertThat(person.getCats().get(1).getName()).isEqualTo("cat3");
 		assertThat(person.getFirstName()).isEqualTo("gigi-changed");
+		// CascadeType.MERGE applied
 		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1-changed");
 	}
-
 
 	/**
 	 * friend use CascadeType.PERSIST + CascadeType.MERGE
@@ -239,7 +262,7 @@ class PersonsRepositoryIT {
 	 * new person + detached friend (name does change)
 	 */
 	@Test
-	void newPersonWithDetachedFriend() {
+	void newPersonWithDetachedFriend2() {
 		Cat catX = catsRepository.save(new Cat("catX"));
 		Person person = generatePerson();
 		person.getCats().add(catX);
@@ -250,9 +273,9 @@ class PersonsRepositoryIT {
 //		person = personsRepository.insert(person);
 		person = personsRepository.merge(person);
 		log.debug("person:\n{}", personsRepository.loadInitializedById(person.getId()));
-		assertThat(person.getCats()).extracting(Cat::getName).contains("cat1", "catX");
 		assertThat(person.getFirstName()).isEqualTo("gigi");
 		assertThat(person.getFriend().getFirstName()).isEqualTo("friend1-changed");
+		assertThat(person.getCats()).extracting(Cat::getName).contains("cat1", "cat2", "catX");
 	}
 
 	private Person createThenReloadPerson() {
